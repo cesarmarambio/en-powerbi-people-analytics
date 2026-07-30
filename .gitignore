@@ -1,0 +1,22 @@
+# Power BI (Archivos locales y caché)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# Entorno y Credenciales (Seguridad)
+cloud_ingestion/.env
+*.json
+
+# Python
+__pycache__/
+.venv/
+venv/
+env/
+
+# Datos Crudos (Generados localmente)
+*.jsonl
+*.csv
+*.xlsx
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db

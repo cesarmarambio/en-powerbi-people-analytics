@@ -1,0 +1,119 @@
+table dim_employees
+	lineageTag: 8af0f0a0-4790-4074-9ecf-58389ba4f8d9
+
+	column valid_to
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bf4f3eb8-4db1-4bc1-acbe-b3aa08172480
+		summarizeBy: none
+		sourceColumn: valid_to
+
+		variation Variation
+			isDefault
+			relationship: 14c6a8ed-b856-4ec9-aa75-64df16f5eb25
+			defaultHierarchy: LocalDateTable_178bf04e-a73d-4404-9d32-7e2b6113b315.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column job_title
+		dataType: string
+		lineageTag: 4878d302-ac70-474b-a49a-621356f64c91
+		summarizeBy: none
+		sourceColumn: job_title
+
+		annotation SummarizationSetBy = Automatic
+
+	column current_indicator
+		dataType: int64
+		formatString: 0
+		lineageTag: 458f2f1b-6cd4-4a3e-9de3-ef892876d980
+		summarizeBy: none
+		sourceColumn: current_indicator
+
+		annotation SummarizationSetBy = User
+
+	column department
+		dataType: string
+		lineageTag: 66d53442-205e-4008-b75f-c28db5ebaea7
+		summarizeBy: none
+		sourceColumn: department
+
+		annotation SummarizationSetBy = Automatic
+
+	column gender
+		dataType: string
+		lineageTag: e09b4bd2-281b-4f25-bae0-79b0bcb3c01a
+		summarizeBy: none
+		sourceColumn: gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column base_salary
+		dataType: int64
+		formatString: 0
+		lineageTag: 25a8b019-c987-4ab4-ab9f-7a8b7697aa98
+		summarizeBy: none
+		sourceColumn: base_salary
+
+		annotation SummarizationSetBy = User
+
+	column natural_employee_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0921b646-4257-4baa-a51f-e12a45ddac10
+		summarizeBy: none
+		sourceColumn: natural_employee_id
+
+		annotation SummarizationSetBy = User
+
+	column full_name
+		dataType: string
+		lineageTag: ea2de744-cc7a-4021-aa6b-cc080dbd5728
+		summarizeBy: none
+		sourceColumn: full_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column valid_from
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bbfee1a6-054d-4b5a-bacf-2943ed0c5502
+		summarizeBy: none
+		sourceColumn: valid_from
+
+		variation Variation
+			isDefault
+			relationship: ec0c71b8-4416-4652-ac00-6f530541ab35
+			defaultHierarchy: LocalDateTable_fd9c0f50-5f51-4e5b-859b-7e630831e8f8.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column surrogate_id
+		dataType: string
+		lineageTag: 8e87ad6b-9163-4b69-b4e0-eeb499c093b3
+		summarizeBy: none
+		sourceColumn: surrogate_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_employees = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    Proyecto = Source{[Name=GCP_PROJECT_ID,Kind="Database"]}[Data],
+				    Dataset = Proyecto{[Name=GCP_DATASET_ID,Kind="Schema"]}[Data],
+				    dim_empleados_Table = Dataset{[Name="dim_employees",Kind="Table"]}[Data],
+				    #"Replaced Value" = Table.ReplaceValue(dim_empleados_Table,"Female","F",Replacer.ReplaceText,{"gender"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Male","M",Replacer.ReplaceText,{"gender"})
+				in
+				    #"Replaced Value1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

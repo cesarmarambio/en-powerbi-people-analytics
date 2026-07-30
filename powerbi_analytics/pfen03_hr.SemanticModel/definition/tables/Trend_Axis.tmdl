@@ -1,0 +1,83 @@
+table Trend_Axis
+	lineageTag: a4781109-97ff-4e62-9775-5b3b8aceb87c
+
+	column Date
+		formatString: General Date
+		lineageTag: 336274ff-ab66-4fdb-8833-72151d8bac24
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Calendar[Date]
+
+		variation Variation
+			isDefault
+			relationship: e74cf7f3-7221-4109-a06f-65646b7d9938
+			defaultHierarchy: LocalDateTable_f4dc9c17-fe8a-47c2-b7cf-1d2408caded2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Short_Month_Year =
+			
+			FORMAT('Trend_Axis'[Date], "MMM yy", "en-US")
+		lineageTag: 94d7173c-bb4a-4697-8394-d524cbb174c6
+		summarizeBy: none
+		sortByColumn: Year_Month_Sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 50bc270a-6fd5-498c-9f2c-d831643f5d44
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Calendar[Year]
+
+		annotation SummarizationSetBy = User
+
+	column Month_Number
+		formatString: 0
+		lineageTag: c096c98d-aa0b-48cc-b59d-ce52cedc8cae
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Calendar[Month_Number]
+
+		annotation SummarizationSetBy = User
+
+	column Month_Name
+		lineageTag: 88679c28-40ca-4dc5-8c73-6507def57bd5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Calendar[Month_Name]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: bfbb9de9-7a75-4a54-823b-e902521d96a7
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Calendar[Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year_Month
+		lineageTag: d851f1bb-00d1-4f48-b1bb-dfbf78b7eeab
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Calendar[Year_Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year_Month_Sort
+		formatString: 0
+		lineageTag: 7cf8c64c-fee0-4191-bfcc-0397843faabd
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Dim_Calendar[Year_Month_Sort]
+
+		annotation SummarizationSetBy = User
+
+	partition Trend_Axis = calculated
+		mode: import
+		source = 'Dim_Calendar'
+
+	annotation PBI_Id = e6dd96b814a44e9698cecd6bf1d92893
+

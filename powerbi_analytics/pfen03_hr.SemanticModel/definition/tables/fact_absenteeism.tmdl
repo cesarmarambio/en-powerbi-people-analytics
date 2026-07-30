@@ -1,0 +1,71 @@
+table fact_absenteeism
+	lineageTag: 77b267ac-60cf-44dc-a978-2cf985f68c5c
+
+	column absence_days
+		dataType: int64
+		formatString: 0
+		lineageTag: 3325aeae-0bf4-4461-b2b8-08d85fdba34b
+		summarizeBy: none
+		sourceColumn: absence_days
+
+		annotation SummarizationSetBy = User
+
+	column natural_employee_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 82af250e-652d-46c8-875b-b2d871ec518a
+		summarizeBy: none
+		sourceColumn: natural_employee_id
+
+		annotation SummarizationSetBy = User
+
+	column absence_type
+		dataType: string
+		lineageTag: 5db1cc5f-0f3a-4985-9c3e-1c41d9020515
+		summarizeBy: none
+		sourceColumn: absence_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column event_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7e4046f2-eb77-4f51-9624-9223aaa8780a
+		summarizeBy: none
+		sourceColumn: event_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column surrogate_employee_id
+		dataType: string
+		lineageTag: 010483f0-f6ce-42f8-86f9-9431f6290dc1
+		summarizeBy: none
+		sourceColumn: surrogate_employee_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column absence_id
+		dataType: string
+		lineageTag: c7ffa2fc-fb88-41cf-9f48-f7a21060ae55
+		summarizeBy: none
+		sourceColumn: absence_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_absenteeism = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"portfolio-rrhh_Database" = Source{[Name=GCP_PROJECT_ID,Kind="Database"]}[Data],
+				    rrhh_analytics_Schema = #"portfolio-rrhh_Database"{[Name=GCP_DATASET_ID,Kind="Schema"]}[Data],
+				    fact_ausentismo_Table = rrhh_analytics_Schema{[Name="fact_absenteeism",Kind="Table"]}[Data]
+				in
+				    fact_ausentismo_Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,28 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["dim_employees","fact_movements","fact_monthly_payroll","_HR_Measures","fact_absenteeism","GCP_PROJECT_ID","GCP_DATASET_ID"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_employees
+ref table DateTableTemplate_4a7a0ccf-b67f-409f-82a0-91a13ef9fef0
+ref table fact_movements
+ref table fact_monthly_payroll
+ref table Dim_Calendar
+ref table _HR_Measures
+ref table Trend_Axis
+ref table fact_absenteeism
+ref table LocalDateTable_178bf04e-a73d-4404-9d32-7e2b6113b315
+ref table LocalDateTable_fd9c0f50-5f51-4e5b-859b-7e630831e8f8
+ref table LocalDateTable_f4dc9c17-fe8a-47c2-b7cf-1d2408caded2
+
+ref cultureInfo en-US
+

@@ -1,0 +1,226 @@
+table _HR_Measures
+	lineageTag: c742c73d-c332-4f05-9e74-711f0bf1ce93
+
+	measure Total_Payroll_Cost = SUM('fact_monthly_payroll'[total_company_cost])
+		formatString: \$#,0;\$-#,0;\$#,0
+		lineageTag: cdd33d76-ebab-45a7-b8d5-2f41f4737798
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-CL"}
+
+	measure Current_Headcount =
+			
+			CALCULATE(
+			    COUNTROWS('dim_employees'),
+			    'dim_employees'[current_indicator] = 1
+			)
+		formatString: 0
+		lineageTag: 93f1ed13-1198-4afc-8799-9218e14e085a
+
+	measure 12M_Cost_Trend = ```
+			
+			VAR EndDate = MAX('Dim_Calendar'[Date]) 
+			VAR StartDate = EDATE(EndDate, -11) 
+			VAR CurrentAxisDate = MAX('Trend_Axis'[Date]) 
+			
+			RETURN
+			IF(
+			    CurrentAxisDate >= StartDate && CurrentAxisDate <= EndDate,
+			    CALCULATE(
+			        [Total_Payroll_Cost],
+			        REMOVEFILTERS('Dim_Calendar'), -- This is the key line to clear filters!
+			        TREATAS(VALUES('Trend_Axis'[Year_Month]), 'Dim_Calendar'[Year_Month])
+			    ),
+			    BLANK()
+			)
+			```
+		formatString: 0
+		lineageTag: e6235486-6ebc-4b07-9e05-d3bfc8e08d01
+
+	measure Dynamic_Headcount =
+			
+			VAR FilterDate = MAX('Dim_Calendar'[Date]) -- Captures the last day of the month selected in the Slicer
+			RETURN
+			    CALCULATE(
+			        COUNTROWS('dim_employees'),
+			        'dim_employees'[valid_from] <= FilterDate,
+			        'dim_employees'[valid_to] >= FilterDate || ISBLANK('dim_employees'[valid_to])
+			    )
+		formatString: 0
+		lineageTag: 806eda0b-a4f4-4281-9867-1d5fa907f3da
+
+	measure Monthly_Terminations =
+			
+			CALCULATE(
+			    COUNTROWS('fact_movements'),
+			    'fact_movements'[event_type] IN {"TERMINATION", "RESIGNATION"}
+			)
+		formatString: 0
+		lineageTag: f5b673e0-7133-421f-ab23-af738baa0439
+
+	measure Monthly_Hires =
+			
+			CALCULATE(
+			    COUNTROWS('fact_movements'),
+			    'fact_movements'[event_type] = "HIRE"
+			)
+		formatString: 0
+		lineageTag: bfd4f590-43b0-4610-9e95-f948662c7fa8
+
+	measure Monthly_Turnover_Rate = ```
+			
+			VAR Total_Terminations = [Monthly_Terminations] + 0
+			VAR Current_Period_Headcount = [Dynamic_Headcount]
+			
+			-- Calculate how many people there were the immediately preceding month
+			VAR Previous_Month_Headcount = 
+			    CALCULATE(
+			        [Dynamic_Headcount],
+			        PREVIOUSMONTH('Dim_Calendar'[Date])
+			    )
+			
+			-- Avoid dividing by zero in the company's first month of operations
+			VAR Average_Employees = 
+			    DIVIDE(Current_Period_Headcount + Previous_Month_Headcount, 2)
+			
+			RETURN
+			DIVIDE(Total_Terminations, Average_Employees, BLANK())
+			```
+		formatString: #,0.00%;-#,0.00%;#,0.00%
+		lineageTag: de202a5d-1e81-4103-949b-758399a06170
+
+	measure Terminations_Waterfall = [Monthly_Terminations] * -1
+		formatString: 0
+		lineageTag: 9cec4f35-fcdd-465c-af7e-7544663d2efa
+
+	measure Previous_Month_Headcount =
+			
+			CALCULATE(
+			    [Dynamic_Headcount],
+			    PREVIOUSMONTH('Dim_Calendar'[Date])
+			)
+		formatString: 0
+		lineageTag: d452f64d-5083-4558-9611-f6c795e5cc61
+
+	measure Net_Movements =
+			
+			SUMX(
+			    VALUES('fact_movements'[event_type]),
+			    SWITCH(
+			        'fact_movements'[event_type],
+			        "HIRE", CALCULATE(COUNTROWS('fact_movements')),
+			        "TERMINATION", CALCULATE(COUNTROWS('fact_movements')) * -1,
+			        "RESIGNATION", CALCULATE(COUNTROWS('fact_movements')) * -1,
+			        BLANK()
+			    )
+			)
+		formatString: 0
+		lineageTag: 4fcee677-17b0-4833-b5fc-5f623a630424
+
+	measure Average_Active_Salary =
+			
+			VAR FilterDate = MAX('Dim_Calendar'[Date])
+			RETURN
+			    CALCULATE(
+			        AVERAGE('dim_employees'[base_salary]),
+			        'dim_employees'[valid_from] <= FilterDate,
+			        'dim_employees'[valid_to] >= FilterDate || ISBLANK('dim_employees'[valid_to])
+			    )
+		lineageTag: 5c4b9d6f-639a-4483-87e0-db115e8e20ec
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Salary_Gap_% = ```
+			
+			VAR Average_Female = 
+			    CALCULATE(
+			        [Average_Active_Salary], 
+			        'dim_employees'[gender] = "F"
+			    )
+			VAR Average_Male = 
+			    CALCULATE(
+			        [Average_Active_Salary], 
+			        'dim_employees'[gender] = "M"
+			    )
+			
+			RETURN
+			-- Only calculate the gap if both genders exist in the current context
+			IF(
+			    NOT ISBLANK(Average_Female) && NOT ISBLANK(Average_Male),
+			    DIVIDE(Average_Female - Average_Male, Average_Male, BLANK()),
+			    BLANK()
+			)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 76e57dca-a622-43f2-8f0e-537caa06ba27
+
+	measure Average_Female_Salary = ```
+			
+			CALCULATE(
+			    [Average_Active_Salary], 
+			    'dim_employees'[gender] = "F"
+			)
+			```
+		formatString: \$#,0;\$-#,0;\$#,0
+		lineageTag: 9c7ba180-4e5a-4ea0-b3df-ad7adb27be4f
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-CL"}
+
+	measure Average_Male_Salary = ```
+			
+			CALCULATE(
+			    [Average_Active_Salary], 
+			    'dim_employees'[gender] = "M"
+			)
+			```
+		formatString: \$#,0;\$-#,0;\$#,0
+		lineageTag: c61bbbef-0876-4479-b502-8295586cfe8f
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-CL"}
+
+	measure Bradford_Factor = ```
+			
+			VAR EndDate = MAX('Dim_Calendar'[Date])
+			VAR StartDate = EDATE(EndDate, -12) -- 12-month rolling window backwards
+			
+			RETURN
+			AVERAGEX(
+			    VALUES('dim_employees'[natural_employee_id]), -- Iterate employee by employee
+			    
+			    VAR Spells = -- (S) Number of absence events
+			        CALCULATE(
+			            COUNTROWS('fact_absenteeism'),
+			            DATESBETWEEN('Dim_Calendar'[Date], StartDate, EndDate)
+			        )
+			        
+			    VAR Days = -- (D) Total days absent
+			        CALCULATE(
+			            SUM('fact_absenteeism'[absence_days]),
+			            DATESBETWEEN('Dim_Calendar'[Date], StartDate, EndDate)
+			        )
+			        
+			    RETURN
+			    -- Apply the mathematical formula only if the employee had absences
+			    IF(
+			        NOT ISBLANK(Spells), 
+			        (Spells * Spells) * Days, 
+			        BLANK()
+			    )
+			)
+			```
+		lineageTag: ca9448f0-9aa2-4c6c-834a-36f12ed81024
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition _HR_Measures = m
+		mode: import
+		source =
+				let
+				  Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Removed Columns" = Table.RemoveColumns(Source,{"Column1"})
+				in
+				  #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

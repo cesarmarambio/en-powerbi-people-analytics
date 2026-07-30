@@ -1,0 +1,12 @@
+expression GCP_PROJECT_ID = "portfolio-rrhh" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: a973aa4e-feec-4055-af48-c6d4537af2e4
+
+	annotation PBI_ResultType = Text
+
+expression GCP_DATASET_ID = "hr_analytics_en" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 26195d8d-63c9-450b-8351-240ec1772229
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+

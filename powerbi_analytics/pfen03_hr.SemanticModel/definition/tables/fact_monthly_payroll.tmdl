@@ -1,0 +1,98 @@
+table fact_monthly_payroll
+	lineageTag: c585236e-a3fd-407a-af7d-cc24ae81e4c6
+
+	column Payroll_Date = DATE(VALUE(LEFT('fact_monthly_payroll'[month_year], 4)), VALUE(RIGHT('fact_monthly_payroll'[month_year], 2)), 1)
+		formatString: Short Date
+		lineageTag: 4f54ad4d-7f9c-4d87-a273-ac1876ec8d8e
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column total_company_cost
+		dataType: int64
+		formatString: 0
+		lineageTag: 33b65f15-4ece-45d4-9c10-1b7b79e7d57b
+		summarizeBy: none
+		sourceColumn: total_company_cost
+
+		annotation SummarizationSetBy = User
+
+	column deductions
+		dataType: int64
+		formatString: 0
+		lineageTag: 9bb16838-6f7f-4254-bd27-865c73535c08
+		summarizeBy: none
+		sourceColumn: deductions
+
+		annotation SummarizationSetBy = User
+
+	column natural_employee_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 45226b16-fdf6-4dee-b802-359b6e7b79e7
+		summarizeBy: none
+		sourceColumn: natural_employee_id
+
+		annotation SummarizationSetBy = User
+
+	column base_salary
+		dataType: int64
+		formatString: 0
+		lineageTag: 85918807-64f1-45ac-bd0a-bb8663f77e30
+		summarizeBy: sum
+		sourceColumn: base_salary
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_year
+		dataType: string
+		lineageTag: 158a613a-7eeb-4787-9d08-f31235dc7805
+		summarizeBy: none
+		sourceColumn: month_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column surrogate_employee_id
+		dataType: string
+		lineageTag: aba2b184-2ee3-4093-8c97-63728780bc1e
+		summarizeBy: none
+		sourceColumn: surrogate_employee_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column bonuses
+		dataType: int64
+		formatString: 0
+		lineageTag: 34a6cea2-476a-43d0-817b-fb210354d128
+		summarizeBy: none
+		sourceColumn: bonuses
+
+		annotation SummarizationSetBy = User
+
+	column snapshot_id
+		dataType: string
+		lineageTag: b8a828e4-65f8-49d1-a491-b10167152728
+		summarizeBy: none
+		sourceColumn: snapshot_id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_monthly_payroll = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"portfolio-rrhh_Database" = Source{[Name=GCP_PROJECT_ID,Kind="Database"]}[Data],
+				    rrhh_analytics_Schema = #"portfolio-rrhh_Database"{[Name=GCP_DATASET_ID,Kind="Schema"]}[Data],
+				    fact_nomina_mensual_Table = rrhh_analytics_Schema{[Name="fact_monthly_payroll",Kind="Table"]}[Data]
+				in
+				    fact_nomina_mensual_Table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

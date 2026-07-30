@@ -1,0 +1,39 @@
+relationship 14c6a8ed-b856-4ec9-aa75-64df16f5eb25
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_employees.valid_to
+	toColumn: LocalDateTable_178bf04e-a73d-4404-9d32-7e2b6113b315.Date
+
+relationship ec0c71b8-4416-4652-ac00-6f530541ab35
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_employees.valid_from
+	toColumn: LocalDateTable_fd9c0f50-5f51-4e5b-859b-7e630831e8f8.Date
+
+relationship 52df5003-0d63-f979-8c5a-78fc86217f41
+	fromColumn: fact_absenteeism.surrogate_employee_id
+	toColumn: dim_employees.surrogate_id
+
+relationship 202b0e8b-5343-44b7-812d-ef6043274791
+	fromColumn: fact_monthly_payroll.surrogate_employee_id
+	toColumn: dim_employees.surrogate_id
+
+relationship db5d7f9c-421f-a571-4c58-e3c3408d6bc3
+	fromColumn: fact_movements.surrogate_employee_id
+	toColumn: dim_employees.surrogate_id
+
+relationship 3f2a8090-a4c0-3e3a-6d54-7c27b05a79d4
+	fromColumn: fact_monthly_payroll.Payroll_Date
+	toColumn: Dim_Calendar.Date
+
+relationship 23384908-c05a-2e1c-a621-80e9dbce8c46
+	fromColumn: fact_movements.event_date
+	toColumn: Dim_Calendar.Date
+
+relationship fffc723e-94a0-f61c-0ca4-bad79ecde472
+	fromColumn: fact_absenteeism.event_date
+	toColumn: Dim_Calendar.Date
+
+relationship e74cf7f3-7221-4109-a06f-65646b7d9938
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Trend_Axis.Date
+	toColumn: LocalDateTable_f4dc9c17-fe8a-47c2-b7cf-1d2408caded2.Date
+

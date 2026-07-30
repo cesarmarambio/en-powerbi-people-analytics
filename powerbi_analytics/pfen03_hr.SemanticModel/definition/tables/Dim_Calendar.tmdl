@@ -1,0 +1,82 @@
+table Dim_Calendar
+	lineageTag: 0e5330fc-1d98-49b8-98c6-fbb09722cb69
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: General Date
+		lineageTag: a38a66b6-38fd-4784-ab45-67de6fe38099
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: e3e47e39-656e-49c0-9828-448e8919fddb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = User
+
+	column Month_Number
+		formatString: 0
+		lineageTag: c0e858d2-1604-4df8-86ed-802da775d267
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month_Number]
+
+		annotation SummarizationSetBy = User
+
+	column Month_Name
+		lineageTag: f5459804-b7e6-4557-8ae2-ce5054362c4f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month_Name]
+		sortByColumn: Month_Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: 4b89c41c-f9e3-466e-a160-14126560b2c9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year_Month
+		lineageTag: 98fcbd6f-1f4b-401f-94b7-ad4c73c61f5f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year_Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year_Month_Sort
+		formatString: 0
+		lineageTag: 08c9f44c-fbb6-4a92-ba03-0cf7c59cd936
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year_Month_Sort]
+
+		annotation SummarizationSetBy = User
+
+	partition Dim_Calendar = calculated
+		mode: import
+		source =
+				
+				ADDCOLUMNS (
+				    CALENDAR (DATE(2023, 1, 1), DATE(2026, 12, 31)),
+				    "Year", YEAR([Date]),
+				    "Month_Number", MONTH([Date]),
+				    "Month_Name", UPPER(LEFT(FORMAT([Date], "MMMM", "en-US"), 1)) & MID(FORMAT([Date], "MMMM", "en-US"), 2, 20),
+				    "Quarter", "Q" & FORMAT([Date], "Q"),
+				    "Year_Month", FORMAT([Date], "YYYY-MM"),
+				    "Year_Month_Sort", YEAR([Date]) * 100 + MONTH([Date])
+				)
+
+	annotation PBI_Id = b1d45d92aa3f49c58c7fa9ada219108e
+
