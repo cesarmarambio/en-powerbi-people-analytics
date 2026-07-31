@@ -1,5 +1,3 @@
-readme_content = """# People Analytics Command Center - Data Engineering & Cloud BI
-
 ![Python](https://img.shields.io/badge/PYTHON-3776AB?style=for-the-badge&logo=python&logoColor=white) ![Google Cloud](https://img.shields.io/badge/GOOGLE%20CLOUD-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white) ![BigQuery](https://img.shields.io/badge/BIGQUERY-669DF6?style=for-the-badge&logo=google-bigquery&logoColor=white) ![Power BI](https://img.shields.io/badge/POWER%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
 
 > **[View the Interactive Dashboard in my Portfolio](https://intelidatos.cl/portafolio/)**
@@ -46,4 +44,3 @@ To replicate this architecture in your own environment, follow these steps in or
 
 * **Credential Management:** Authentication to GCP services is isolated using environment variables and the service account file (`.json`), ensuring that cloud identity and billing are not exposed in the source code.
 * **TMDL (Tabular Model Definition Language):** Just like in Enterprise-level projects, this repository uses the Power BI `.pbip` format to enable semantic version control over DAX and M code, eliminating dependencies and conflicts caused by opaque binaries (`.pbix`).
-"""
