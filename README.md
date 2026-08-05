@@ -1,6 +1,6 @@
 ![Python](https://img.shields.io/badge/PYTHON-3776AB?style=for-the-badge&logo=python&logoColor=white) ![Google Cloud](https://img.shields.io/badge/GOOGLE%20CLOUD-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white) ![BigQuery](https://img.shields.io/badge/BIGQUERY-669DF6?style=for-the-badge&logo=google-bigquery&logoColor=white) ![Power BI](https://img.shields.io/badge/POWER%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
 
-> **[View the Interactive Dashboard in my Portfolio](https://intelidatos.cl/portafolio/)**
+> **[View the Interactive Dashboard in my Portfolio](https://intelidatos.cl/en/portfolio/)**
 
 This project represents an advanced end-to-end analytical solution designed for Human Resources Management. It is built on a Cloud Data Warehousing architecture that enables monitoring of critical indicators such as talent management, absenteeism, salary equity, and labor cost evolution.
 
@@ -44,3 +44,15 @@ To replicate this architecture in your own environment, follow these steps in or
 
 * **Credential Management:** Authentication to GCP services is isolated using environment variables and the service account file (`.json`), ensuring that cloud identity and billing are not exposed in the source code.
 * **TMDL (Tabular Model Definition Language):** Just like in Enterprise-level projects, this repository uses the Power BI `.pbip` format to enable semantic version control over DAX and M code, eliminating dependencies and conflicts caused by opaque binaries (`.pbix`).
+
+## Visual Architecture & Data Modeling
+
+### The Constellation Schema
+The semantic engine is built upon a robust constellation schema, designed to handle multiple fact tables and conformed dimensions, ensuring accurate cross-filtering and high-performance DAX evaluations.
+
+![Constellation Schema Model](img/en_people_model.png)
+
+### The Final Dashboard
+The end product is a high-performance People Analytics Command Center, transforming raw JSON events ingested via BigQuery into actionable HR insights.
+
+![People Analytics Dashboard](img/en_people_main.png)
